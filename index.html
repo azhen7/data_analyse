@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+    <script src="js/script.js" type="module" defer></script>
+    
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <h1>
+      ISU Artifact 2
+    </h1>
+    <p style="font-size: 13px;">
+      Copyright 2023 @ By Adam Zheng
+      <br />
+      Merivale High School Pre-IB
+    </p>
+    <br /><br />
+    <p style="background-color: lightyellow; margin-left: 25%; margin-right: 25%; width: 50%;">
+      Note: This web service supports plotting and basic analysis of 1D data set, 2D data set,
+      and multivariate data set.
+      <br />
+      To input values, you can either type them in manually,
+      or import a .csv ("comma separated values") file with the values
+      already filled in, and the website will parse the file for you.
+    </p>
+
+    <!-- Choose number of variables -->
+    <div class="select_wrapper">
+      <span>Choose data type:</span>
+      <select id="choose_num_vars">
+        <option value="none">-------------</option>
+        <option value="single_var">Single Variable Data</option>
+        <option value="two_var">Two Variable Data</option>
+        <option value="multi_var">Multivariate Data</option>
+      </select>
+    </div>
+
+    <p>
+      Note: All decimals are rounded to 5 decimal places
+      <br />
+      All charts generated with <a target="_blank" rel="noopener noreferrer" href="https://plotly.com/javascript/">Plotly</a>.
+    </p>
+
+    <!-- Single variable -->
+    <div id="single_var" style="display: none;">
+      <hr />
+      <h3>
+        Option 1
+      </h3>
+      <p style="font-size: 17px;">
+        Enter your values (separated by spaces):
+      </p>
+      <input size="40" height="100" id="values">
+      <br /><br />
+      <button type="button" id="submit_values">
+        Submit
+      </button>
+      <br /><br />
+      <h3>
+        Option 2
+      </h3>
+      <!-- Upload csv file -->
+      <form>
+        <label for="file">Or upload a .csv file:</label><br />
+        <input id="file" name="file" type="file" accept=".csv">
+      </form>
+      <span id="upload_csv_file_contents"></span>
+    </div>
+    <br /><br />
+    <!-- Output measures of central tendency and spread -->
+    <div id="single_var_results" style="display: none;">
+      <div style="width: 100%;">
+        <div style="width: 30%; float: left; margin-left: 20%;">
+          <p id="left"></p>
+        </div>
+        <div style="margin-left: 50%; margin-right: 20%">
+          <p id="right"></p>
+        </div>
+      </div>
+
+      <!-- Quartile modal -->
+      <div class="modal" id="quartile_calc_modal">
+        <div class="modal-content">
+          <span class="close" id="quartile_calc_close">&times;</span>
+          <p>
+            <b>Note</b>: There is no universally agreed-upon method of computing the first
+            and third quartiles, and different software utilize different computation
+            methods to find the first and third quartiles (see: <a target="_blank" rel="noopener noreferrer" href="https://jse.amstat.org/v14n3/langford.html">
+            https://jse.amstat.org/v14n3/langford.html</a>).
+            <br /><br />
+            The method utilized here is method 10 of the above link.
+          </p>
+        </div>
+      </div>
+      <!-- Histogram bin grouping modal -->
+      <div class="modal" id="histogram_grouping_modal">
+        <div class="modal-content">
+          <span class="close" id="histogram_grouping_close">&times;</span>
+          <p>
+            <b>Note</b>: Values are grouped together into "bins" of 10 (i.e.
+            0-9, 10-19, 20-29, etc.)
+          </p>
+        </div>
+      </div>
+
+      <br />
+      <!-- Choose graph for single variable -->
+      <div id="graph_chooser" style="display: none;" class="select_wrapper">
+        <select id="graph_select">
+          <option value="none">Choose graph:</option>
+          <option value="box_outlier">Box Plot with Outliers</option>
+          <option value="box_no_outlier">Box Plot without Outliers</option>
+          <option value="histogram">Histogram</option>
+        </select>
+      </div>
+      <br />
+      <div id="graph" class="graph_div"></div>
+      <p id="additionalInfo"></p>
+    </div>
+
+    <!-- Two Variable Data -->
+    <div id="two_var" style="display: none;">
+      <hr />
+      <h3>
+        Option 1
+      </h3>
+      Input labels: <br />
+      <input id="label1" placeholder="X Label" value="X Values"> <input id="label2" placeholder="Y Label" value="Y Labels">
+      <br /><br />
+      <div style="width: 100%;">
+        <div style="width: 30%; float: left; margin-left: 20%;">
+          Enter X values<br />
+          <textarea id="two_var_x" rows="10" columns="50"></textarea>
+        </div>
+        <div style="margin-left: 50%; margin-right: 20%">
+          Enter Y values<br />
+          <textarea id="two_var_y" rows="10" columns="50"></textarea>
+        </div>
+      </div>
+      <br />
+      <button type="button" id="two_var_submit">
+        Submit
+      </button>
+      <br /><br />
+      <h3>
+        Option 2
+      </h3>
+      <!-- Upload csv file -->
+      <form>
+        <label for="file">Upload a .csv file:</label><br />
+        <input id="two_var_file" name="file" type="file" accept=".csv">
+      </form>
+      <span id="csv_format_view" class="triggerModal">(Click here to see required .csv file format)</span>
+      <br />
+      <span id="two_var_upload_csv_file_contents"></span>
+    </div>
+    <br />
+    <!-- Choose graph for two variables -->
+    <div id="two_var_results" style="display: none;">
+      <!-- CSV file format modal -->
+      <div class="modal" id="two_var_csv_format_modal">
+        <div class="modal-content">
+          <span class="close" id="two_var_csv_format_close">&times;</span>
+          <p>
+            <b>Note</b>: When importing a csv file for two variable data, the csv file must be formatted like so:
+            <table>
+              <tbody>
+                <tr>
+                  <th>X Label</th>
+                  <td>x<sub>1</sub></td>
+                  <td>x<sub>2</sub></td>
+                  <td>x<sub>3</sub></td>
+                  <td>...</td>
+                </tr>
+                <tr>
+                  <th>Y Label</th>
+                  <td>y<sub>1</sub></td>
+                  <td>y<sub>2</sub></td>
+                  <td>y<sub>3</sub></td>
+                  <td>...</td>
+                </tr>
+              </tbody>  
+            </table>
+            <br />
+            The X and Y Labels <b>must not</b> be numeric (i.e. cannot be converted completely to a number). So, things like "3" and "4.5"
+            are not allowed, but "Cost" and "4x" are.
+          </p>
+        </div>
+      </div>
+      
+      <p id="two_var_data_info"></p>
+      
+      <div id="two_var_graph_chooser" style="display: none;" class="select_wrapper">
+        <select id="two_var_graph_select">
+          <option value="none">Choose graph:</option>
+          <option value="scatter">Scatter Plot</option>
+          <option value="bar">Bar Graph</option>
+          <option value="line">Line Graph</option>
+        </select>
+      </div>
+      <br />
+      <div id="two_var_graph" class="graph_div"></div>
+      <p id="two_var_additionalInfo"></p>
+      <div id="two_var_predicter" style="display: none;">
+        Type value to predict output:
+        <input id="two_var_predict_input" size="10">
+        <span id="two_var_predict_res"></span>
+      </div>
+
+      <!-- Line of best fit calculation modal -->
+      <div class="modal" id="line_best_fit_modal">
+        <div class="modal-content">
+          <span class="close" id="line_best_fit_close">&times;</span>
+          <p>
+            <h1>Line of Best Fit Calculation</h1>
+            The line of best fit is of the form \(y = mx + b\), where \(m\) is the slope of the line and \(b\) is the intial value. We calculate this line using
+            <a ref="noopener noreferrer" target="_blank" href="https://www.mathsisfun.com/data/least-squares-regression.html">Least Squares Regression</a>. <br /><br />
+            \(m\) is calculated as such: given two datasets \(x\) and \(y\), each with size \(N\), with elements \(x_i\) and \(y_i\) respectively,
+            with \(i = 1, 2 , ... , N\) the slope is equal to
+            $$
+              m = \frac{N\sum\limits_{n=1}^N (x_iy_i) - \sum\limits_{n=1}^N (x_i) \sum\limits_{n=1}^N (y_i)}{N\sum\limits_{n=1}^N (x_i^2) - (\sum\limits_{n-1}^N (x_i))^2}
+            $$
+            <br /><br />
+            \(b\) (the initial value) is equal to
+            $$
+              b = \frac{\sum\limits_{n=1}^N (y_i) - m \sum\limits_{n-1}^N (x_i)}{N}
+            $$
+            where \(m\) is the slope of the line we'd computed above.
+            <br /><br />
+            If \(N\sum\limits_{n=1}^N (x_i^2) - (\sum\limits_{n-1}^N (x_i))^2 = 0\), then the line of best fit is a vertical line. This only occurs when all the x-coordinates
+            of the data points are the same; as a result, we just need to take the x-coordinate of all data points, say, \(x_{common}\), and our line of best fit is
+            \(x = x_{common}\).
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Multivariate -->
+    <div id="multi_var" style="display: none;">
+      <hr />
+      Input number of data points:
+      <input id="multi_var_num_data_pts">
+      <br /><br />
+      <div id="input_data_pts"></div>
+      <button type="button" id="multi_var_submit">
+        Submit
+      </button>
+    </div>
+    <br />
+    <div id="multi_var_results" style="display: none">
+      <div id="multi_var_graph_chooser" style="display: none;" class="select_wrapper">
+        <select id="multi_var_graph_select">
+          <option value="none">Choose graph:</option>
+          <option value="pie">Pie Chart</option>
+          <option value="bar">Bar Graph</option>
+        </select>
+      </div>
+      <br />
+      <div id="bar_graph_labels" style="display: none;">
+        Input labels: <br />
+        <input id="multi_var_label1" placeholder="X Label" value="X Values"> <input id="multi_var_label2" placeholder="Y Label" value="Y Labels">
+        <br />
+        <button type="button" id="multi_var_submit_labels">
+          Submit
+        </button>
+      </div>
+      <br />
+      <div id="multi_var_graph" class="graph_div"></div>
+      <p id="multi_var_additionalInfo"></p>
+    </div>
+  </body>
+</html>
