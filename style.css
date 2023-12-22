@@ -1,0 +1,96 @@
+input.not(.two_var_input), button {
+  display: block;
+  margin: auto;
+}
+
+h1, h3, p, div, label {
+  text-align: center;
+}
+
+h1, h3, p, label, span, input {
+  cursor: text;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+input[type="button"], button {
+  cursor: pointer;
+}
+
+table {
+  margin: auto;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+}
+
+textarea {
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888888;
+  width: 80%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.triggerModal {
+  color: #5fa0fa;
+}
+
+.graph_div {
+  --width: 1000px;
+  width: var(--width);
+  margin: auto;
+  display: none;
+}
+
+@media screen and (max-width: 1000px) {
+  .graph_div {
+    --width: 90vw;
+    width: var(--width);
+    margin: auto;
+  }
+}
+
+.graph_div {
+  border: 1px solid black;
+}
