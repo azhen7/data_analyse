@@ -1,8 +1,6 @@
 import * as single_var from "./data_calcs.js";
 import * as graph_generator from "./graph.js";
 
-import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7/+esm"; //d3 - read csv files
-
 function round(k) {
   return Math.round(k * Math.pow(10, 5)) / Math.pow(10, 5);
 }
@@ -46,7 +44,7 @@ document.getElementById("choose_num_vars").addEventListener("change", () => {
 });
 
 function singleVarData(s) {
-  const values = s.split(" ");
+  const values = s.trim().replace(/ +/g, " ").split(" ");
   if (s.length === 0) {
     alert("ERROR: No values were entered");
     return;
@@ -55,7 +53,7 @@ function singleVarData(s) {
   //get parsed values
   let parsed = [];
   for (const v of values) {
-    const value = v.trim();
+    const value = v;
     if ((+value).toString() !== value) {
       alert("ERROR: Only numeric values allowed");
       return;
@@ -131,6 +129,10 @@ function singleVarData(s) {
   document.getElementById("graph").style.display = "none";
   document.getElementById("additionalInfo").innerText = "";
   
+  //single variable graph
+  //using onchange instead of addEventListener because setting
+  //onchange explicitly overrides all previously set listeners, which is
+  //what I want
   document.getElementById("graph_select").onchange = function generateSingleVarDataGraph() {
     document.getElementById("additionalInfo").innerText = "";
     document.getElementById("graph").style.display = "block";
@@ -167,11 +169,11 @@ document.getElementById("submit_values").addEventListener("click", () => {
 });
 
 const one_var_form = document.getElementById("file");
-one_var_form.addEventListener("change", async function(e) {
+one_var_form.addEventListener("change", () => {
   const file = one_var_form.files[0];
   const reader = new FileReader();
   
-  reader.onloadend = async event => {
+  reader.onloadend = () => {
     const contents = document.getElementById("upload_csv_file_contents");
     const data = reader.result.split(",");
     
@@ -237,12 +239,12 @@ document.getElementById("two_var_submit").addEventListener("click", () => {
     return;
   }
   
-  textAreaX = textAreaX.replace(/\n/g, " ");
-  textAreaY = textAreaY.replace(/\n/g, " ");
+  textAreaX = textAreaX.trim().replace(/\n/g, " ").replace(/ +/g, " "); //replace multiple consecutive spaces to 1
+  textAreaY = textAreaY.trim().replace(/\n/g, " ").replace(/ +/g, " "); //replace multiple consecutive spaces to 1
   
-  //Preprocess inputs
-  let x = textAreaX.split(" ").map(e => +e);
-  let y = textAreaY.split(" ").map(e => +e);
+  //preprocess inputs
+  const x = textAreaX.split(" ").map(e => +e.trim());
+  const y = textAreaY.split(" ").map(e => +e.trim());
   
   if (x.length !== y.length) {
     alert("ERROR: There must be one y value for every x value");
@@ -250,35 +252,6 @@ document.getElementById("two_var_submit").addEventListener("click", () => {
   }
   
   document.getElementById("two_var_upload_csv_file_contents").innerHTML = "";
-  
-//   for (let i = 0; i < textAreaInput.length; i++) {
-//     if (textAreaInput[i] === "(") {
-//       let first = "";
-//       i++;
-//       while (i < textAreaInput.length && textAreaInput[i] !== ",") {
-//         first += textAreaInput[i++];
-//       }
-//       first = first.trim();
-//       if ((+first).toString() !== first) {
-//         alert("ERROR: Invalid input");
-//         return;
-//       }
-      
-//       let second = "";
-//       i++;
-//       while (i < textAreaInput.length && textAreaInput[i] !== ")") {
-//         second += textAreaInput[i++];
-//       }
-//       second = second.trim();
-//       if ((+second).toString() !== second) {
-//         alert("ERROR: Invalid input");
-//         return;
-//       }
-      
-//       x.push(+first);
-//       y.push(+second);
-//     }
-//   }
   
   twoVarData(x, y, xLabel, yLabel);
 });
@@ -319,7 +292,7 @@ two_var_form.addEventListener("change", e => {
   const file = two_var_form.files[0];
   const reader = new FileReader();
   
-  reader.onloadend = event => {
+  reader.onloadend = () => {
     //parse csv
     const data = parseTwoVarCSV(reader.result);
     if (typeof data === "undefined") {
@@ -378,7 +351,6 @@ function twoVarData(x, y, xLabel, yLabel) {
   }
   
   //correlation coef
-  //const correl_coef = single_var.pearson_correl(x, y);
   const correl_coef = single_var.pearson_correl(x,y);
   const correl_info = single_var.determine_correlation_info(correl_coef);
   
@@ -403,6 +375,7 @@ function twoVarData(x, y, xLabel, yLabel) {
     document.getElementById("two_var_graph").style.display = "block";
     document.getElementById("two_var_additionalInfo").innerHTML = "";
     
+    //two var graphs
     switch (document.getElementById("two_var_graph_select").value) {
       case "scatter": {
         const lineData = graph_generator.scatter_plot("two_var_graph", x.slice(), y.slice(), xLabel, yLabel);
@@ -468,6 +441,7 @@ function twoVarData(x, y, xLabel, yLabel) {
             `;
           }
         }
+        //no line of best fit
         else {
           document.getElementById("two_var_predicter").style.display = "none";
           document.getElementById("two_var_additionalInfo").innerHTML +=
@@ -502,7 +476,7 @@ function twoVarData(x, y, xLabel, yLabel) {
 
 //Multi variable data points inputter
 const outer = document.getElementById("input_data_pts");
-document.getElementById("multi_var_num_data_pts").addEventListener("input", e => {
+document.getElementById("multi_var_num_data_pts").addEventListener("input", () => {
   const val = document.getElementById("multi_var_num_data_pts").value;
   const num = +val;
   if (num !== num) {
@@ -530,8 +504,8 @@ document.getElementById("multi_var_submit").addEventListener("click", () => {
   }
   
   const dataPts = document.getElementsByClassName("multi_var_input");
+  //Getting and preprocessing data points
   let x = [], y = [];
-  //Getting data points
   for (let i = 0; i < dataPts.length; i += 2) {
     if (dataPts[i].value.trim() === "" || dataPts[i].value.trim() === "") {
       alert("ERROR: All inputs must be filled in");
@@ -557,7 +531,8 @@ document.getElementById("multi_var_submit").addEventListener("click", () => {
   document.getElementById("multi_var_graph").style.display = "none";
   document.getElementById("bar_graph_labels").style.display = "none";
   
-  document.getElementById("multi_var_graph_select").onchange = e => {
+  //multivariate graphs
+  document.getElementById("multi_var_graph_select").onchange = () => {
     document.getElementById("multi_var_additionalInfo").innerHTML = "";
     document.getElementById("multi_var_graph").style.display = "block";
     document.getElementById("bar_graph_labels").style.display = "none";
@@ -571,7 +546,7 @@ document.getElementById("multi_var_submit").addEventListener("click", () => {
         document.getElementById("bar_graph_labels").style.display = "block";
         document.getElementById("multi_var_graph").style.display = "none";
         
-        document.getElementById("multi_var_submit_labels").onclick = e => {
+        document.getElementById("multi_var_submit_labels").onclick = () => {
           document.getElementById("multi_var_graph").style.display = "block";
           graph_generator.bar("multi_var_graph", x.slice(), y.slice(), document.getElementById("multi_var_label1").value, document.getElementById("multi_var_label2").value); //TODO: Add option to add labels
         };
