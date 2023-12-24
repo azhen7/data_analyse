@@ -8,7 +8,7 @@ This project uses [Plotly.js](https://plotly.com/javascript/) (to generate the g
 First, create a new folder. Then, clone the `glitch` branch of this GitHub repository into the folder: <br>
 `git clone -b glitch https://github.com/azhen7/data_analyse.git`
 
-In the folder, you should now see a subfolder named `data_analyse`. Type `cd data_analyse` into the terminal.
+You should now see a subfolder named `data_analyse`. Type `cd data_analyse` into the terminal.
 
 Once the current directory is `data_analyse`, install [Electron](https://www.electronjs.org/): <br>
 `npm install --save electron`.
