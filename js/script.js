@@ -169,7 +169,7 @@ document.getElementById("submit_values").addEventListener("click", () => {
 });
 
 const one_var_form = document.getElementById("file");
-one_var_form.addEventListener("change", () => {
+one_var_form.addEventListener("change", e => {
   const file = one_var_form.files[0];
   const reader = new FileReader();
   
