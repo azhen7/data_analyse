@@ -256,6 +256,7 @@ document.getElementById("two_var_submit").addEventListener("click", () => {
   twoVarData(x, y, xLabel, yLabel);
 });
 
+//parse csv
 function parseTwoVarCSV(data) {
   const unparsed = data.split("\n");
   if (unparsed.length !== 2) {
@@ -268,8 +269,8 @@ function parseTwoVarCSV(data) {
   ];
 }
 
+//construct table to display parsed results to user
 function buildTable(x, y, xLabel, yLabel) {
-  //construct table to display parsed results to user
   let table = `<table><tbody><tr><th>${xLabel}</th>`;
   //insert x values into table
   for (let i = 0; i < x.length; i++) {
@@ -293,7 +294,6 @@ two_var_form.addEventListener("change", e => {
   const reader = new FileReader();
   
   reader.onloadend = () => {
-    //parse csv
     const data = parseTwoVarCSV(reader.result);
     if (typeof data === "undefined") {
       return;
@@ -334,7 +334,7 @@ two_var_form.addEventListener("change", e => {
       x[i] = +currX;
       y[i] = +currY;
     }
-    
+    //display table
     document.getElementById("two_var_upload_csv_file_contents").innerHTML = `<br /> Parsed from uploaded .csv file: <br /><br /> ${buildTable(x, y, xLabel, yLabel)}`;
     
     twoVarData(x, y, xLabel, yLabel);
@@ -378,6 +378,7 @@ function twoVarData(x, y, xLabel, yLabel) {
     //two var graphs
     switch (document.getElementById("two_var_graph_select").value) {
       case "scatter": {
+        //get line of best fit
         const lineData = graph_generator.scatter_plot("two_var_graph", x.slice(), y.slice(), xLabel, yLabel);
         
         if (typeof lineData === "object") {
@@ -514,7 +515,7 @@ document.getElementById("multi_var_submit").addEventListener("click", () => {
     
     const currentX = dataPts[i].value.trim();
     if ((+currentX).toString() === currentX) {
-      alert("ERROR: First row must only be labels");
+      alert("ERROR: First row must only be labels and cannot be numeric");
       return;
     }
     const currentY = dataPts[i + 1].value.trim();
