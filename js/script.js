@@ -210,7 +210,7 @@ for (const elem of modals) {
   // When the user clicks on <span> (x), close the modal
   span.addEventListener("click", () => {
     modal.style.display = "none";
-  })
+  });
 
   // When the user clicks anywhere outside of the modal, close it
   window.addEventListener("click", event => {
@@ -219,9 +219,9 @@ for (const elem of modals) {
     }
   });
 }
-document.getElementById("csv_format_view").onclick = e => {
+document.getElementById("csv_format_view").onclick = () => {
   document.getElementById("two_var_csv_format_modal").style.display = "block";
-}
+};
 
 //Two variable submit
 document.getElementById("two_var_submit").addEventListener("click", () => {
