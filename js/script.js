@@ -198,14 +198,14 @@ one_var_form.addEventListener("change", e => {
 });
 
 const modals = [
-  ["quartile_calc_modal", "quartile_calc_close"],
-  ["histogram_grouping_modal", "histogram_grouping_close"],
-  ["line_best_fit_modal", "line_best_fit_close"],
-  ["two_var_csv_format_modal", "two_var_csv_format_close"]
+  "quartile_calc",
+  "histogram_grouping",
+  "line_best_fit",
+  "two_var_csv_format"
 ];
 for (const elem of modals) {
-  const modal = document.getElementById(elem[0]);
-  const span = document.getElementById(elem[1]);
+  const modal = document.getElementById(elem + "_modal");
+  const span = document.getElementById(elem + "_close");
 
   // When the user clicks on <span> (x), close the modal
   span.addEventListener("click", () => {
