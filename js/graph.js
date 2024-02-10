@@ -1,7 +1,3 @@
-function isEqual(a, b) {
-  return Math.abs(a - b) < 1e-8;
-}
-
 export function generateAxisLabel(label) {
   return {
     title: {
