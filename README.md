@@ -5,8 +5,8 @@ This project is a web service written in HTML and JavaScript designed, developed
 This project uses [Plotly.js](https://plotly.com/javascript/) (to generate the graphs) and [Electron](https://www.electronjs.org/).
 
 ## How To Install
-First, create a new folder. Then, clone the `glitch` branch of this GitHub repository into the folder: <br>
-`git clone -b glitch https://github.com/azhen7/data_analyse.git`
+First, create a new folder. Then, clone this GitHub repository into the folder: <br>
+`git clone https://github.com/azhen7/data_analyse.git`
 
 You should now see a subfolder named `data_analyse`. Type `cd data_analyse` into the terminal.
 
